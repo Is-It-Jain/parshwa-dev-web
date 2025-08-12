@@ -2036,7 +2036,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 --------------------------------------------------------------------------------
 camera
-camera_android
+camera_android_camerax
 camera_avfoundation
 camera_platform_interface
 camera_web
