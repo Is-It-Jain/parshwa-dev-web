@@ -85283,7 +85283,7 @@ e.e=A.b8(a3,B.b8,a1).w.a.a
 a1=A.b8(a3,B.b8,a1).w.a.b-a2.b-a2.d
 e.f=a1
 s=t.p
-a1=A.Hk(!0,B.bb,d,A.f7(d,d,d,A.cp(B.fU,B.k,d,d),d,d,new A.ahu(a3),d,d,d,d),new A.po(A.ci(A.b([A.aR(A.aj(c,d,d,d,d,A.b6(d,d,B.k,d,d,d,d,d,d,d,d,20,d,d,B.P,d,d,!0,d,d,d,d,d,d,d,d),d,d),d,d),A.rR("https://www.stepstokindness.org/logo.jpg",e.f*0.13,e.e*0.98),A.cd(A.b([A.f7(d,d,d,A.cp(B.Gb,B.k,d,30),d,d,new A.ahv(a3),d,d,d,"Home"),A.f7(d,d,d,A.cp(B.fX,B.u3,d,30),d,d,new A.ahw(),d,d,d,"Scan")],s),B.v,B.hf,B.u,0)],s),B.v,B.t,B.u),B.zc,d),a1*0.3)
+a1=A.Hk(!0,B.bb,d,A.f7(d,d,d,A.cp(B.fU,B.k,d,d),d,d,new A.ahu(a3),d,d,d,d),new A.po(A.ci(A.b([A.aR(A.aj(c,d,d,d,d,A.b6(d,d,B.k,d,d,d,d,d,d,d,d,20,d,d,B.P,d,d,!0,d,d,d,d,d,d,d,d),d,d),d,d),A.rR("https://stepstokindness.org/logo.jpg",e.f*0.13,e.e*0.98),A.cd(A.b([A.f7(d,d,d,A.cp(B.Gb,B.k,d,30),d,d,new A.ahv(a3),d,d,d,"Home"),A.f7(d,d,d,A.cp(B.fX,B.u3,d,30),d,d,new A.ahw(),d,d,d,"Scan")],s),B.v,B.hf,B.u,0)],s),B.v,B.t,B.u),B.zc,d),a1*0.3)
 r=A.b([A.aR(d,20,d)],s)
 if(e.r!=null){q=A.k7(B.c3)
 p=A.e2(8)
@@ -85833,7 +85833,7 @@ i.e=A.b8(a,B.b8,f).w.a.a
 f=i.f=A.b8(a,B.b8,f).w.a.b-e.b-e.d
 s=A.aR(A.aj("Steps to Kindness",h,h,h,h,A.b6(h,h,B.k,h,h,h,h,h,h,h,h,20,h,h,B.P,h,h,!0,h,h,h,h,h,h,h,h),h,h),h,h)
 r=A.aR(h,8,h)
-q=A.rR("https://www.stepstokindness.org/logo.jpg",i.f*0.1,i.e*0.98)
+q=A.rR("https://stepstokindness.org/logo.jpg",i.f*0.1,i.e*0.98)
 p=A.aR(h,8,h)
 o=t.p
 n=A.oc(A.cd(A.b([A.cp(B.fY,h,h,h),A.fX(A.auA(B.jS,1,new A.aje(i),new A.ajf(i,a)),1),A.f7(h,h,h,B.jQ,h,h,new A.ajg(i,a),h,h,h,h),A.f7(h,h,h,B.jR,h,h,new A.ajh(a),h,h,h,h)],o),B.v,B.t,B.u,0),B.iC,B.bY)
@@ -86086,9 +86086,9 @@ p.e=A.b8(a,B.b8,n).w.a.a
 n=A.b8(a,B.b8,n).w.a.b-m.b-m.d
 p.f=n
 s=t.p
-n=A.Hk(!0,B.bb,o,o,new A.po(A.ci(A.b([A.aR(A.aj("Steps to Kindness",o,o,o,o,A.b6(o,o,o,o,o,o,o,o,o,o,o,20,o,o,B.P,o,o,!0,o,o,o,o,o,o,o,o),o,o),o,o),A.rR("https://www.stepstokindness.org/logo.jpg",p.f*0.13,p.e*0.98),A.oc(A.cd(A.b([A.cp(B.fY,o,o,o),A.fX(A.auA(B.jS,1,new A.alb(p),new A.alc(p,a)),1),A.f7(o,o,o,B.jQ,o,o,new A.ald(p,a),o,o,o,o),A.f7(o,o,o,B.jR,o,o,new A.ale(a),o,o,o,o)],s),B.v,B.t,B.u,0),B.iC,B.bY)],s),B.v,B.t,B.u),B.zc,o),n*0.3)
+n=A.Hk(!0,B.bb,o,o,new A.po(A.ci(A.b([A.aR(A.aj("Steps to Kindness",o,o,o,o,A.b6(o,o,o,o,o,o,o,o,o,o,o,20,o,o,B.P,o,o,!0,o,o,o,o,o,o,o,o),o,o),o,o),A.rR("https://stepstokindness.org/logo.jpg",p.f*0.13,p.e*0.98),A.oc(A.cd(A.b([A.cp(B.fY,o,o,o),A.fX(A.auA(B.jS,1,new A.alb(p),new A.alc(p,a)),1),A.f7(o,o,o,B.jQ,o,o,new A.ald(p,a),o,o,o,o),A.f7(o,o,o,B.jR,o,o,new A.ale(a),o,o,o,o)],s),B.v,B.t,B.u,0),B.iC,B.bY)],s),B.v,B.t,B.u),B.zc,o),n*0.3)
 r=p.e*0.6
-r=A.cd(A.b([A.rR("https://www.stepstokindness.org/gurudev.jpeg",r,r)],s),B.v,B.by,B.u,0)
+r=A.cd(A.b([A.rR("https://stepstokindness.org/gurudev.jpeg",r,r)],s),B.v,B.by,B.u,0)
 q=p.e
 return A.Mk(n,B.k,A.AZ(A.ci(A.b([r,A.cd(A.b([A.aR(A.aj("Our platform is dedicated to helping you make informed, compassionate choices by providing a comprehensive guide to cruelty-free and vegan products. Rooted in Jain principles of non-violence and ethical living, we believe in taking mindful baby steps toward kindness. We aim to clear the confusion around hidden ingredients in everyday products, from cosmetics to household items.\nExplore our easy-to-use guide to ensure your purchases align with a lifestyle of mindfulness and respect for all living beings.",o,o,o,!0,o,o,o),o,q*0.95)],s),B.ao,B.by,B.u,0)],s),B.v,B.by,B.u),o))}}
 A.alb.prototype={
@@ -86264,7 +86264,7 @@ r=A.b8(a,B.aU,s).w.r
 p.e=A.b8(a,B.b8,s).w.a.a
 s=p.f=A.b8(a,B.b8,s).w.a.b-r.b-r.d
 q=t.p
-q=A.ci(A.b([A.aR(A.aj("Steps to Kindness",o,o,o,o,A.b6(o,o,B.k,o,o,o,o,o,o,o,o,20,o,o,B.P,o,o,!0,o,o,o,o,o,o,o,o),o,o),o,o),A.aR(o,8,o),A.rR("https://www.stepstokindness.org/logo.jpg",p.f*0.1,p.e*0.98),A.aR(o,8,o),A.oc(A.cd(A.b([A.cp(B.fY,o,o,o),A.fX(A.auA(B.jS,1,new A.arq(p),new A.arr(p,a)),1),A.f7(o,o,o,B.jQ,o,o,new A.ars(p,a),o,o,o,o),A.f7(o,o,o,B.jR,o,o,new A.art(a),o,o,o,o)],q),B.v,B.t,B.u,0),B.iC,B.bY)],q),B.v,B.t,B.u)
+q=A.ci(A.b([A.aR(A.aj("Steps to Kindness",o,o,o,o,A.b6(o,o,B.k,o,o,o,o,o,o,o,o,20,o,o,B.P,o,o,!0,o,o,o,o,o,o,o,o),o,o),o,o),A.aR(o,8,o),A.rR("https://stepstokindness.org/logo.jpg",p.f*0.1,p.e*0.98),A.aR(o,8,o),A.oc(A.cd(A.b([A.cp(B.fY,o,o,o),A.fX(A.auA(B.jS,1,new A.arq(p),new A.arr(p,a)),1),A.f7(o,o,o,B.jQ,o,o,new A.ars(p,a),o,o,o,o),A.f7(o,o,o,B.jR,o,o,new A.art(a),o,o,o,o)],q),B.v,B.t,B.u,0),B.iC,B.bY)],q),B.v,B.t,B.u)
 return A.Mk(A.Hk(!0,B.bb,o,A.f7(o,o,o,B.nH,o,o,new A.aru(p,a),o,o,o,o),new A.po(q,new A.t(1/0,s*0.2),o),s*0.25),B.k,A.AZ(p.Xz(p.a.d),o))}}
 A.arq.prototype={
 $1(a){this.a.x=a},
