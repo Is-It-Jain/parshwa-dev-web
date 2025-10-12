@@ -1,0 +1,83 @@
+name: Staged Deploy + Discord Notify + Manual Approval
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-deploy-staging:
+    name: Build & Deploy to Staging
+    runs-on: ubuntu-latest
+    outputs:
+      staging_url: "https://v2.stepstokindness.org"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - run: npm run build
+
+      - name: Deploy to Staging
+        id: deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages-staging
+          publish_dir: ./
+
+  run-tests:
+    name: Run Tests on Staging
+    needs: build-deploy-staging
+    runs-on: ubuntu-latest
+    outputs:
+      test_summary: ${{ steps.test-summary.outputs.result }}
+    steps:
+      - name: Run feature tests
+        id: run-tests
+        run: |
+          STAGING_URL="https://v2.stepstokindness.org"
+          echo "Testing $STAGING_URL"
+
+          # Simple checks
+          RESULTS=""
+          curl -sSf "$STAGING_URL" | grep -q "Home" && RESULTS+="✅ Home page OK\n" || RESULTS+="❌ Home page FAIL\n"
+          curl -sSf "$STAGING_URL/about" && RESULTS+="✅ About page OK\n" || RESULTS+="❌ About page FAIL\n"
+
+          echo -e "$RESULTS" > test_results.txt
+          echo "result<<EOF" >> $GITHUB_OUTPUT
+          echo "$RESULTS" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Send results to Discord
+        run: |
+          WEBHOOK_URL=""
+          MESSAGE="**GitHub Pages Test Results:**\n${{ steps.run-tests.outputs.result }}\n\nVisit the GitHub Actions page to approve or reject deployment."
+          PAYLOAD=$(jq -n --arg content "$MESSAGE" '{content: $content}')
+          curl -X POST -H "Content-Type: application/json" -d "$PAYLOAD" "$WEBHOOK_URL"
+
+  deploy-prod:
+    name: Deploy to Production
+    needs: run-tests
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://www.stepstokindness.org
+    steps:
+      - name: Await Manual Approval
+        uses: peter-evans/wait-for-approval@v3
+        with:
+          timeout-minutes: 120
+          instructions: "Approve to deploy to PRODUCTION"
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - run: npm run build
+      - name: Deploy to Production
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: ./
