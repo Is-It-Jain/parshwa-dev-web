@@ -1,81 +1,52 @@
-name: Staged Deploy + Discord Notify + Manual Approval
+name: Deploy and Test Workflow
 
 on:
   push:
-    branches: [ master ]
+    branches:
+      - master
+  workflow_dispatch:
 
 jobs:
-  build-deploy-staging:
-    name: Build & Deploy to Staging
+  deploy-v2:
+    name: Deploy to v2.stepstokindness.org and Run Tests
     runs-on: ubuntu-latest
-    outputs:
-      staging_url: "https://v2.stepstokindness.org"
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-      - name: Deploy to Staging
-        id: deploy
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Deploy to v2.stepstokindness.org
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: gh-pages-staging
           publish_dir: ./
+          cname: v2.stepstokindness.org
 
-  run-tests:
-    name: Run Tests on Staging
-    needs: build-deploy-staging
-    runs-on: ubuntu-latest
-    outputs:
-      test_summary: ${{ steps.test-summary.outputs.result }}
-    steps:
-      - name: Run feature tests
-        id: run-tests
+      - name: Run Tests
         run: |
-          STAGING_URL="https://v2.stepstokindness.org"
-          echo "Testing $STAGING_URL"
+          echo "============================="
+          echo "🔍 Running tests on v2.stepstokindness.org"
+          echo "============================="
+          chmod +x scripts/test.sh
+          ./scripts/test.sh || TEST_FAIL=1
 
-          # Simple checks
-          RESULTS=""
-          curl -sSf "$STAGING_URL" | grep -q "Home" && RESULTS+="✅ Home page OK\n" || RESULTS+="❌ Home page FAIL\n"
-          curl -sSf "$STAGING_URL/about" && RESULTS+="✅ About page OK\n" || RESULTS+="❌ About page FAIL\n"
+          if [ "$TEST_FAIL" = "1" ]; then
+            echo "❌ Some tests failed."
+          else
+            echo "✅ All tests passed successfully."
+          fi
 
-          echo -e "$RESULTS" > test_results.txt
-          echo "result<<EOF" >> $GITHUB_OUTPUT
-          echo "$RESULTS" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
-
-      - name: Send results to Discord
-        run: |
-          WEBHOOK_URL=""
-          MESSAGE="**GitHub Pages Test Results:**\n${{ steps.run-tests.outputs.result }}\n\nVisit the GitHub Actions page to approve or reject deployment."
-          PAYLOAD=$(jq -n --arg content "$MESSAGE" '{content: $content}')
-          curl -X POST -H "Content-Type: application/json" -d "$PAYLOAD" "$WEBHOOK_URL"
-
-  deploy-prod:
-    name: Deploy to Production
-    needs: run-tests
+  deploy-production:
+    name: Deploy to www.stepstokindness.org
     runs-on: ubuntu-latest
-    environment:
-      name: production
-      url: https://www.stepstokindness.org
+    needs: deploy-v2
+    if: ${{ github.event_name == 'workflow_dispatch' }}
     steps:
-      - name: Await Manual Approval
-        uses: peter-evans/wait-for-approval@v3
-        with:
-          timeout-minutes: 120
-          instructions: "Approve to deploy to PRODUCTION"
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-      - run: npm ci
-      - run: npm run build
-      - name: Deploy to Production
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Deploy to www.stepstokindness.org
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: gh-pages
           publish_dir: ./
+          cname: www.stepstokindness.org
