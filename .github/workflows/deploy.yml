@@ -2,7 +2,7 @@ name: Staged Deploy + Discord Notify + Manual Approval
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
 
 jobs:
   build-deploy-staging:
