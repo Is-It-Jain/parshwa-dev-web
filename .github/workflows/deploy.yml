@@ -1,53 +1,56 @@
-name: Deploy and Test Workflow
+name: Deploy to StepsToKindness
 
 on:
   push:
     branches:
+      - '*-dev'
+      - main-dev
       - master
-  workflow_dispatch:
-permissions:
-  contents: write
+      - 'v[0-9]*'
+
 jobs:
-  deploy-v2:
-    name: Deploy to v2.stepstokindness.org and Run Tests
+  build-and-deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout Repository
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Deploy to v2.stepstokindness.org
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./
-          cname: v2.stepstokindness.org
+          node-version: 20
 
-      - name: Run Tests
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
+
+      - name: Determine deployment domain
+        id: set-domain
         run: |
-          echo "============================="
-          echo "🔍 Running tests on v2.stepstokindness.org"
-          echo "============================="
-          chmod +x scripts/test.sh
-          ./scripts/test.sh || TEST_FAIL=1
-
-          if [ "$TEST_FAIL" = "1" ]; then
-            echo "❌ Some tests failed."
+          branch="${GITHUB_REF##*/}"
+          if [[ "$branch" == "master" ]]; then
+            echo "fqdn=stepstokindness.org" >> $GITHUB_OUTPUT
+          elif [[ "$branch" == "main-dev" ]]; then
+            echo "fqdn=dev.stepstokindness.org" >> $GITHUB_OUTPUT
+          elif [[ "$branch" =~ ^v[0-9]+ ]]; then
+            echo "fqdn=${branch}.stepstokindness.org" >> $GITHUB_OUTPUT
+          elif [[ "$branch" =~ ^[a-zA-Z0-9_-]+-dev$ ]]; then
+            name="${branch%-dev}"
+            echo "fqdn=${name}.dev.stepstokindness.org" >> $GITHUB_OUTPUT
           else
-            echo "✅ All tests passed successfully."
+            echo "fqdn=unknown.stepstokindness.org" >> $GITHUB_OUTPUT
           fi
 
-  deploy-production:
-    name: Deploy to www.stepstokindness.org
-    runs-on: ubuntu-latest
-    needs: deploy-v2
-    if: ${{ github.event_name == 'workflow_dispatch' }}
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Deploy to www.stepstokindness.org
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Deploy to GitHub Pages
+        uses: crazy-max/ghaction-github-pages@v4.2.0
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./
-          cname: www.stepstokindness.org
+          target_branch: gh-pages
+          build_dir: dist
+          fqdn: ${{ steps.set-domain.outputs.fqdn }}
+          keep_history: false
+          allow_empty_commit: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
