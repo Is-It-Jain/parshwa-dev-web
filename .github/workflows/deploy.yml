@@ -37,7 +37,7 @@ jobs:
         uses: crazy-max/ghaction-github-pages@v4.2.0
         with:
           target_branch: gh-pages
-          build_dir: build/web
+          build_dir: .
           fqdn: ${{ steps.set-domain.outputs.fqdn }}
           keep_history: false
           allow_empty_commit: true
