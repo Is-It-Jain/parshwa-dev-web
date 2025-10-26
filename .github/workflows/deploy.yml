@@ -1,4 +1,4 @@
-name: Deploy to StepsToKindness
+name: Deploy StepsToKindness Static Site
 
 on:
   push:
@@ -9,23 +9,12 @@ on:
       - 'v[0-9]*'
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build project
-        run: npm run build
 
       - name: Determine deployment domain
         id: set-domain
@@ -48,7 +37,7 @@ jobs:
         uses: crazy-max/ghaction-github-pages@v4.2.0
         with:
           target_branch: gh-pages
-          build_dir: dist
+          build_dir: build/web
           fqdn: ${{ steps.set-domain.outputs.fqdn }}
           keep_history: false
           allow_empty_commit: true
