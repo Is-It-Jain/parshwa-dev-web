@@ -1,4 +1,4 @@
-name: Deploy StepsToKindness Static Site
+name: Deploy StepsToKindness Project Site
 
 on:
   push:
@@ -52,17 +52,19 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
-      - name: Add CNAME for custom domain
+      - name: Add branch-specific CNAME
         run: |
           echo "${{ needs.determine-domain.outputs.fqdn }}" > CNAME
           echo "Using domain: ${{ needs.determine-domain.outputs.fqdn }}"
           cat CNAME
 
-      - name: Upload site artifact
+      - name: Upload artifact (entire repository)
         uses: actions/upload-pages-artifact@v3
         with:
           path: './'
