@@ -40,19 +40,16 @@ jobs:
           echo "fqdn=$fqdn" >> $GITHUB_OUTPUT
           echo "Selected domain: $fqdn"
 
-      - name: Set CNAME
+      - name: Prepare CNAME and nojekyll
         run: |
           echo "${{ steps.domain.outputs.fqdn }}" > CNAME
-          echo "Using CNAME: ${{ steps.domain.outputs.fqdn }}"
-          cat CNAME
-
-      - name: Ensure nojekyll
-        run: touch .nojekyll
+          touch .nojekyll
+          echo "CNAME set to ${{ steps.domain.outputs.fqdn }}"
 
       - name: Commit and push changes
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A
-          git commit -m "Deploy static site from branch ${GITHUB_REF##*/}" || echo "No changes to commit"
+          git add CNAME .nojekyll .
+          git diff --cached --quiet || git commit -m "Deploy static site from branch ${GITHUB_REF##*/}"
           git push origin HEAD
