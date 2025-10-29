@@ -10,22 +10,19 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
+  contents: write
 
 jobs:
-  determine-domain:
+  deploy:
     runs-on: ubuntu-latest
-    outputs:
-      fqdn: ${{ steps.set-domain.outputs.fqdn }}
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - name: Determine deployment domain
-        id: set-domain
+        id: domain
         run: |
           branch="${GITHUB_REF##*/}"
           if [[ "$branch" == "master" ]]; then
@@ -41,34 +38,32 @@ jobs:
             fqdn="unknown.stepstokindness.org"
           fi
           echo "fqdn=$fqdn" >> $GITHUB_OUTPUT
-          echo "Selected domain: $fqdn"
 
-  deploy:
-    needs: determine-domain
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-
-      - name: Add branch-specific CNAME
+      - name: Deploy ./ to gh-pages
         run: |
-          echo "${{ needs.determine-domain.outputs.fqdn }}" > CNAME
-          echo "Using domain: ${{ needs.determine-domain.outputs.fqdn }}"
-          cat CNAME
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      - name: Upload artifact (entire repository)
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: './'
+          # Ensure gh-pages branch exists
+          if git ls-remote --exit-code origin gh-pages; then
+            echo "gh-pages exists"
+          else
+            echo "Creating gh-pages branch"
+            git checkout --orphan gh-pages
+            git reset --hard
+            echo "Initializing gh-pages branch" > index.html
+            git add index.html
+            git commit -m "Initialize gh-pages branch"
+            git push origin gh-pages
+            git checkout -
+          fi
 
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          # Deploy
+          git checkout gh-pages
+          git rm -rf . || true
+          cp -r $GITHUB_WORKSPACE/* .
+          echo "${{ steps.domain.outputs.fqdn }}" > CNAME
+          touch .nojekyll
+          git add -A
+          git commit -m "Deploy from ${GITHUB_REF##*/} branch"
+          git push -f origin gh-pages
