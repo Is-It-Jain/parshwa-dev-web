@@ -3,8 +3,8 @@ name: Deploy StepsToKindness Project Site
 on:
   push:
     branches:
-      - "master"
-      - "main-dev"
+      - master
+      - main-dev
       - "*-dev"
       - "v[0-9]*"
   workflow_dispatch:
@@ -38,32 +38,19 @@ jobs:
             fqdn="unknown.stepstokindness.org"
           fi
           echo "fqdn=$fqdn" >> $GITHUB_OUTPUT
+          echo "Selected domain: $fqdn"
 
-      - name: Deploy ./ to gh-pages
+      - name: Deploy ./ to GitHub Pages
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # Configure git
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          # Ensure gh-pages branch exists
-          if git ls-remote --exit-code origin gh-pages; then
-            echo "gh-pages exists"
-          else
-            echo "Creating gh-pages branch"
-            git checkout --orphan gh-pages
-            git reset --hard
-            echo "Initializing gh-pages branch" > index.html
-            git add index.html
-            git commit -m "Initialize gh-pages branch"
-            git push origin gh-pages
-            git checkout -
-          fi
-
-          # Deploy
-          git checkout gh-pages
-          git rm -rf . || true
-          cp -r $GITHUB_WORKSPACE/* .
+          # Ensure CNAME for custom domain
           echo "${{ steps.domain.outputs.fqdn }}" > CNAME
           touch .nojekyll
+
+          # Commit and push changes on the same branch
           git add -A
-          git commit -m "Deploy from ${GITHUB_REF##*/} branch"
-          git push -f origin gh-pages
+          git commit -m "Deploy static site from branch ${GITHUB_REF##*/}" || echo "No changes to commit"
+          git push origin HEAD
