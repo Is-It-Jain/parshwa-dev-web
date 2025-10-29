@@ -3,7 +3,7 @@ name: Deploy static content to Pages
 on:
   push:
     branches:
-      - '**'  # deploy from any branch
+      - '**'
   workflow_dispatch:
 
 permissions:
@@ -53,7 +53,8 @@ jobs:
           echo "Deploying to: $TARGET"
           mkdir -p "$TARGET"
           find "$TARGET" -mindepth 1 -delete || true
-          cp -r ./* "$TARGET"/
+          mkdir -p deploy
+          rsync -av --exclude 'deploy/' ./ "$TARGET"/
           echo "www.stepstokindness.org" > deploy/CNAME
 
       - name: Upload artifact
