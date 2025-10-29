@@ -17,9 +17,26 @@ jobs:
         with:
           fetch-depth: 0
 
-  determine-domain:
+  ensure-gh-pages:
     runs-on: ubuntu-latest
     needs: checkout
+    steps:
+      - name: Ensure gh-pages branch exists
+        run: |
+          git ls-remote --exit-code origin gh-pages || (
+            echo "Creating empty gh-pages branch..."
+            git checkout --orphan gh-pages
+            git reset --hard
+            echo "Initializing gh-pages branch" > index.html
+            git add index.html
+            git commit -m "Initialize gh-pages branch"
+            git push origin gh-pages
+            git checkout -
+          )
+
+  determine-domain:
+    runs-on: ubuntu-latest
+    needs: ensure-gh-pages
     outputs:
       fqdn: ${{ steps.domain.outputs.fqdn }}
     steps:
@@ -58,7 +75,6 @@ jobs:
           fqdn: ${{ needs.determine-domain.outputs.fqdn }}
           keep_history: false
           allow_empty_commit: true
-          force_orphan: true
           verbose: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
