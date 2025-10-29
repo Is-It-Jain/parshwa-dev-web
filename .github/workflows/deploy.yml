@@ -9,15 +9,20 @@ on:
       - 'v[0-9]*'
 
 jobs:
-  deploy:
+  checkout:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+  determine-domain:
+    runs-on: ubuntu-latest
+    needs: checkout
+    outputs:
+      fqdn: ${{ steps.domain.outputs.fqdn }}
+    steps:
       - name: Determine deployment domain
-        id: set-domain
+        id: domain
         run: |
           branch="${GITHUB_REF##*/}"
           if [[ "$branch" == "master" ]]; then
@@ -32,14 +37,23 @@ jobs:
           else
             echo "fqdn=unknown.stepstokindness.org" >> $GITHUB_OUTPUT
           fi
+          echo "Determined FQDN: $(cat $GITHUB_OUTPUT)"
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: determine-domain
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Deploy to GitHub Pages
         uses: crazy-max/ghaction-github-pages@v4.2.0
         with:
           target_branch: gh-pages
           build_dir: .
-          fqdn: ${{ steps.set-domain.outputs.fqdn }}
+          fqdn: ${{ needs.determine-domain.outputs.fqdn }}
           keep_history: false
           allow_empty_commit: true
+          verbose: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
