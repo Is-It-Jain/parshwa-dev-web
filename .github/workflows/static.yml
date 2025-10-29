@@ -1,0 +1,73 @@
+# Simple workflow for deploying static content to GitHub Pages
+name: Deploy static content to Pages
+
+on:
+  push:
+    branches:
+      - "master"
+      - "main-dev"
+      - "*-dev"
+      - "v[0-9]*"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  determine-domain:
+    runs-on: ubuntu-latest
+    outputs:
+      fqdn: ${{ steps.set-domain.outputs.fqdn }}
+    steps:
+      - name: Determine deployment domain
+        id: set-domain
+        run: |
+          branch="${GITHUB_REF##*/}"
+          if [[ "$branch" == "master" ]]; then
+            fqdn="stepstokindness.org"
+          elif [[ "$branch" == "main-dev" ]]; then
+            fqdn="dev.stepstokindness.org"
+          elif [[ "$branch" =~ ^v[0-9]+ ]]; then
+            fqdn="${branch}.stepstokindness.org"
+          elif [[ "$branch" =~ ^[a-zA-Z0-9_-]+-dev$ ]]; then
+            name="${branch%-dev}"
+            fqdn="${name}.dev.stepstokindness.org"
+          else
+            fqdn="unknown.stepstokindness.org"
+          fi
+          echo "fqdn=$fqdn" >> $GITHUB_OUTPUT
+          echo "Selected domain: $fqdn"
+
+  deploy:
+    needs: determine-domain
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Add dynamic CNAME
+        run: |
+          echo "${{ needs.determine-domain.outputs.fqdn }}" > CNAME
+          echo "Using domain: ${{ needs.determine-domain.outputs.fqdn }}"
+          cat CNAME
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
