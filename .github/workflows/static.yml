@@ -30,7 +30,7 @@ jobs:
         run: |
           branch="${GITHUB_REF##*/}"
           if [[ "$branch" == "master" ]]; then
-            fqdn="stepstokindness.org"
+            fqdn="www.stepstokindness.org"
           elif [[ "$branch" == "main-dev" ]]; then
             fqdn="dev.stepstokindness.org"
           elif [[ "$branch" =~ ^v[0-9]+ ]]; then
