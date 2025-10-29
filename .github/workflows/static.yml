@@ -1,5 +1,4 @@
-# Simple workflow for deploying static content to GitHub Pages
-name: Deploy static content to Pages
+name: Deploy StepsToKindness Static Site
 
 on:
   push:
@@ -51,19 +50,19 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
-      - name: Add dynamic CNAME
+      - name: Add CNAME for custom domain
         run: |
           echo "${{ needs.determine-domain.outputs.fqdn }}" > CNAME
           echo "Using domain: ${{ needs.determine-domain.outputs.fqdn }}"
           cat CNAME
 
-      - name: Upload artifact
+      - name: Upload site artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: './'
